@@ -1,0 +1,28 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main  # Cambia esto al nombre de tu rama principal
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: bun install
+
+    - name: Build
+      run: bun run build  # Asegúrate de ajustar esto a tu proceso de construcción
+
+    - name: Deploy to Server
+      run: |
+       
+        ssh root@159.223.168.4  "cd /server/ && git pull origin main && bun install &&  sudo systemctl daemon-reload &&   sudo systemctl restart todo-server.service"
+
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # Debes configurar la clave SSH como un secreto en tu repositorio

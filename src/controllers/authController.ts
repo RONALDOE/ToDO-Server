@@ -18,7 +18,64 @@ export const authController = new Elysia().group("/auth", (app) =>
     .use(cookie())
     .get("/test", () => {
       return { message: "hola" };
-    })
+    }).post(
+      "/login",
+      async ({ body, jwt, setCookie, set }) => {
+        try {
+          console.log("testeando");
+
+          const { username, password } = body;
+          console.log(body);
+
+          const dbUser = await prisma.users.findFirst({
+            where: {
+              OR: [
+                {
+                  email: username,
+                },
+                {
+                  username,
+                },
+              ],
+            },
+            select: {
+              id: true,
+              password: true,
+            },
+          });
+
+          console.log(dbUser)
+          if (!dbUser) {
+            set.status = 400;
+            return { status: 404, msg: "Invalid Credentials", data: null };
+          }
+
+          const isMatch = await Bun.password.verify(password, dbUser.password);
+          if (!isMatch)
+            return { status: 404, msg: "Invalid Credentials", data: null };
+
+          const accessToken = await jwt.sign({
+            userId: String(dbUser.id),
+            userName: username,
+          });
+          console.log(await jwt.verify(accessToken));
+
+          return {
+            status: 200,
+            msg: "Login successful",
+            data: { accessToken },
+          };
+        } catch (error) {
+          handleErrorsAndDisconnect(prisma, error);
+        }
+      },
+      {
+        body: t.Object({
+          username: t.String(),
+          password: t.String(),
+        }),
+      }
+    )
     .post(
       "/register",
       async ({ body, set }) => {
