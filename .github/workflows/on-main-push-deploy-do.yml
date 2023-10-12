@@ -22,3 +22,7 @@ jobs:
             cd test
             git clone git@github.com:ronaldoe/todo-server
             echo 'Deployment to digital ocean finished'
+            cd todo-server
+            bun install
+            npx prisma generate
+            bun dev
