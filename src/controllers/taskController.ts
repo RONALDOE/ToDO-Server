@@ -1,8 +1,6 @@
 import { Elysia, t } from "elysia";
 import { PrismaClient } from "@prisma/client";
 import { handleErrorsAndDisconnect } from "@utils/dbFunctions";
-import { cookie, SetCookieOptions } from "@elysiajs/cookie";
-import { jwt } from "@elysiajs/jwt";
 const prisma = new PrismaClient();
 
 // Función para verificar si el token es válido
