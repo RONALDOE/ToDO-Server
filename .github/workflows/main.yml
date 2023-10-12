@@ -15,6 +15,9 @@ jobs:
 
     - name: Update code from repository
       run: git pull origin main
+      
+    - name: Make bun executable
+      run: chmod +x /root/.bun/bin/bun
 
     - name: Install dependencies
       run: /root/.bun/bin/bun install
