@@ -17,14 +17,14 @@ jobs:
       run: git pull origin main
 
     - name: Install dependencies
-      run: bun install
+      run: /root/.bun/bin/bun install
 
     - name: Build
-      run: bun run build  # Asegúrate de ajustar esto a tu proceso de construcción
+      run: /root/.bun/bin/bun run build  # Asegúrate de ajustar esto a tu proceso de construcción
 
     - name: Deploy to Server
       run: |
-        ssh root@159.223.168.4  "cd /server/ && bun install &&  sudo systemctl daemon-reload &&   sudo systemctl restart todo-server.service"
+        ssh root@159.223.168.4  "cd /server/ && /root/.bun/bin/bun install &&  sudo systemctl daemon-reload &&   sudo systemctl restart todo-server.service"
 
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # Debes configurar la clave SSH como un secreto en tu repositorio
