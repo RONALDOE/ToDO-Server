@@ -22,7 +22,7 @@ const app = new Elysia().get("/", () => "Hello Elysia")
 .group('/api', app =>
 app
 .use(authController)
-.use(taskController)
+.use(taskController) 
 )
 .listen(Bun.env.PORT!);
 
