@@ -9,8 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to DigitalOcean Droplet
-      - uses: oven-sh/setup-bun@v1
-      - uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@master
         with:
           host: ${{secrets.HOST}}
           username: ${{secrets.USERNAME}}
@@ -24,6 +23,6 @@ jobs:
             git clone git@github.com:ronaldoe/todo-server
             echo 'Deployment to digital ocean finished'
             cd todo-server
-            bun install
+            /home/deployer/.bun/bin/bun install
             npx prisma generate
-            bun dev
+            /home/deployer/.bun/bin/bun dev
