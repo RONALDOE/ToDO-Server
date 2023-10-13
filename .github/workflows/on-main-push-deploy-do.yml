@@ -25,4 +25,4 @@ jobs:
             cd todo-server
             /home/deployer/.bun/bin/bun install
             npx prisma generate
-            /home/deployer/.bun/bin/bun dev
+            /home/deployer/.bun/bin/bun /src/index.ts
