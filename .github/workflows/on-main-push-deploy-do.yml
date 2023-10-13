@@ -17,7 +17,7 @@ jobs:
           script: |
             export NVM_DIR=~/.nvm
             source ~/.nvm/nvm.sh
-            lsof -i :3000
+            killall -9 bun
             rm -rf test
             mkdir test
             cd test
