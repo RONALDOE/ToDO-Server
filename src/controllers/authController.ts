@@ -167,9 +167,9 @@ export const authController = new Elysia().group("/auth", (app) =>
       "/check-token",
       async ({ body, jwt }) => {
         try {
-          const { token } = body;
+          const { accessToken } = body; //Recuerda que en el front se envia como accessToken
 
-          const decoded = await jwt.verify(token);
+          const decoded = await jwt.verify(accessToken);
           if (!decoded) {
             return {
               success: false,
@@ -214,7 +214,7 @@ export const authController = new Elysia().group("/auth", (app) =>
       },
       {
         body: t.Object({
-          token: t.String(),
+          accessToken: t.String(),
         }),
       }
     )
