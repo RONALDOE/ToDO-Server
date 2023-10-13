@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { handleErrorsAndDisconnect } from "@utils/dbFunctions";
 import { cookie } from "@elysiajs/cookie";
 import { jwt } from "@elysiajs/jwt";
-import Bun from 'bun';
+import Bun from "bun";
 
 const prisma = new PrismaClient();
 
@@ -18,7 +18,8 @@ export const authController = new Elysia().group("/auth", (app) =>
     .use(cookie())
     .get("/test", () => {
       return { message: "hola" };
-    }).post(
+    })
+    .post(
       "/login",
       async ({ body, jwt, setCookie, set }) => {
         try {
@@ -44,7 +45,7 @@ export const authController = new Elysia().group("/auth", (app) =>
             },
           });
 
-          console.log(dbUser)
+          console.log(dbUser);
           if (!dbUser) {
             set.status = 400;
             return { status: 404, msg: "Invalid Credentials", data: null };
@@ -91,7 +92,7 @@ export const authController = new Elysia().group("/auth", (app) =>
                 {
                   username,
                 },
-                {email}
+                { email },
               ],
             },
           });
@@ -107,7 +108,7 @@ export const authController = new Elysia().group("/auth", (app) =>
             data: {
               username,
               password: hashedPassword,
-              email
+              email,
             },
           });
 
@@ -129,7 +130,7 @@ export const authController = new Elysia().group("/auth", (app) =>
         body: t.Object({
           username: t.String(),
           password: t.String(),
-          email: t.String()
+          email: t.String(),
         }),
       }
     )
@@ -159,6 +160,61 @@ export const authController = new Elysia().group("/auth", (app) =>
       {
         body: t.Object({
           username: t.String(),
+        }),
+      }
+    )
+    .post(
+      "/check-token",
+      async ({ body, jwt }) => {
+        try {
+          const { token } = body;
+
+          const decoded = await jwt.verify(token);
+          if (!decoded) {
+            return {
+              success: false,
+              message: "Unauthorized",
+              data: null,
+            };
+          }
+
+          const userId = decoded.userId;
+
+          if (!userId) {
+            return {
+              success: false,
+              message: "Unauthorized",
+              data: null,
+            };
+          }
+
+          const user = await prisma.users.findUnique({
+            where: {
+              id: Number(userId),
+            },
+          });
+          if (!user) {
+            return {
+              success: false,
+              message: "Unauthorized",
+              data: null,
+            };
+          }
+          return {
+            user,
+          };
+        } catch (error) {
+          handleErrorsAndDisconnect(prisma, error);
+          return {
+            status: 500,
+            msg: "Error sending password recovery email",
+            data: null,
+          };
+        }
+      },
+      {
+        body: t.Object({
+          token: t.String(),
         }),
       }
     )
