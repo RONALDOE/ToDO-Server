@@ -172,8 +172,8 @@ export const authController = new Elysia().group("/auth", (app) =>
           const decoded = await jwt.verify(accessToken);
           if (!decoded) {
             return {
-              success: false,
-              message: "Unauthorized",
+              status: 500,
+              msg: "Unauthorized",
               data: null,
             };
           }
@@ -182,8 +182,8 @@ export const authController = new Elysia().group("/auth", (app) =>
 
           if (!userId) {
             return {
-              success: false,
-              message: "Unauthorized",
+              status: 500,
+              msg: "Unauthorized",
               data: null,
             };
           }
@@ -195,19 +195,21 @@ export const authController = new Elysia().group("/auth", (app) =>
           });
           if (!user) {
             return {
-              success: false,
-              message: "Unauthorized",
+              status: 500,
+              msg: "Unauthorized",
               data: null,
             };
           }
           return {
-            user,
-          };
+          status: 200,
+          msg: "Authorized",
+          data: user,
+        };
         } catch (error) {
           handleErrorsAndDisconnect(prisma, error);
           return {
             status: 500,
-            msg: "Error sending password recovery email",
+            msg: "Error Checking Token",
             data: null,
           };
         }
