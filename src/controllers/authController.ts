@@ -68,7 +68,7 @@
               status: 200,
               msg: "Login successful",
               data: { accessToken, user:{
-                id: String(dbUser.id),
+                id: Number(dbUser.id),
                 username: String(dbUser.username),
               }
               
